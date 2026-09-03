@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "skill": "web-blueprint-engine",
+  "canonical": "skill/SKILL.md",
+  "principle": "non-destructive detection; project-local installation preferred",
+  "agents": {
+    "claude-code": {
+      "signals": ["CLAUDE_CODE", ".claude", "CLAUDE.md"],
+      "projectPaths": [".claude/skills/web-blueprint-engine/SKILL.md"],
+      "globalPaths": ["~/.claude/skills/web-blueprint-engine/SKILL.md"],
+      "instructionFallback": "CLAUDE.md"
+    },
+    "opencode": {
+      "signals": ["OPENCODE", ".opencode", "opencode.json"],
+      "projectPaths": [".opencode/skills/web-blueprint-engine/SKILL.md", ".agents/skills/web-blueprint-engine/SKILL.md", ".claude/skills/web-blueprint-engine/SKILL.md"],
+      "globalPaths": ["~/.config/opencode/skills/web-blueprint-engine/SKILL.md", "~/.agents/skills/web-blueprint-engine/SKILL.md"]
+    },
+    "codex": {
+      "signals": ["CODEX", "CODEX_CLI", "AGENTS.md"],
+      "projectPaths": [".agents/skills/web-blueprint-engine/SKILL.md"],
+      "globalPaths": ["~/.agents/skills/web-blueprint-engine/SKILL.md"],
+      "instructionFallback": "AGENTS.md"
+    },
+    "google-antigravity": {
+      "signals": ["GEMINI_CLI", ".agents", ".gemini"],
+      "projectPaths": [".agents/skills/web-blueprint-engine/SKILL.md"],
+      "globalPaths": ["~/.gemini/config/skills/web-blueprint-engine/SKILL.md", "~/.agents/skills/web-blueprint-engine/SKILL.md"]
+    },
+    "generic-agent-skills": {
+      "signals": [],
+      "projectPaths": [".agents/skills/web-blueprint-engine/SKILL.md"],
+      "globalPaths": ["~/.agents/skills/web-blueprint-engine/SKILL.md"]
+    }
+  }
+}
