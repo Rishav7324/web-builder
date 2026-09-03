@@ -1,0 +1,6 @@
+{
+  "name": "web-builder",
+  "description": "Universal direct-build Web Builder skill for Codex-compatible agents",
+  "version": "7.1.0",
+  "skills": ["skills/web-builder"]
+}
