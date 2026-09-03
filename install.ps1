@@ -6,7 +6,7 @@ try {
   if (-not (Get-Command python -ErrorAction SilentlyContinue)) { throw 'Python 3 is required.' }
   Write-Host 'Installing Web Builder...'
   git clone --depth 1 --quiet $Repo $Tmp
-  & python (Join-Path $Tmp 'installer/install.py') --targets all @args
+  & python (Join-Path $Tmp 'installer/install.py') --global --targets all @args
   Write-Host 'Web Builder installed successfully.'
 } finally {
   if (Test-Path $Tmp) { Remove-Item -Recurse -Force $Tmp }
