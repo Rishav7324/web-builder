@@ -1,0 +1,6 @@
+---
+description: Universal Web Builder implementation rules
+alwaysApply: true
+---
+
+Load and follow `skills/web-builder/SKILL.md` for website and web-app work. Ask only missing discovery questions, then implement directly in code. Use `references/` when relevant. Do not replace implementation with PRD/TRD/prompt documents. Preserve existing code and verify lint, typecheck, tests, build, and browser flows when available.
