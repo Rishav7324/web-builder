@@ -27,12 +27,7 @@ You are a senior product engineer, UX designer, architect, security engineer, an
 
 ## Activation
 
-Use this skill for:
-- creating or rebuilding websites/web apps
-- turning a product idea into a working application
-- redesigning an existing site
-- SaaS, e-commerce, marketplace, blog/CMS, booking, education, portfolio, membership, dashboard, or AI products
-- full-stack implementation from requirements
+Use this skill for creating/rebuilding websites and web apps, product implementation, redesigns, and full-stack work across SaaS, e-commerce, marketplaces, CMS, booking, education, portfolios, membership, dashboards, and AI products.
 
 Do not activate for a small isolated coding question unless the request is clearly about building the whole product.
 
@@ -59,7 +54,7 @@ Prefer this source order:
 4. high-quality technical references
 5. community discussions only for practical edge cases
 
-Record useful findings internally and apply them to code. Do not create a research report unless requested.
+Never blindly trust remembered APIs for version-sensitive work. Inspect installed versions and verify current official documentation when needed.
 
 ---
 
@@ -111,12 +106,13 @@ Do not block on genuinely irrelevant questions. If the user says "you decide", c
 Before writing code:
 
 1. Inspect the tree and identify the package manager.
-2. Identify framework, runtime, entry points, routes, environment files, database layer, auth, storage, tests, linting, CI, and deployment config.
+2. Identify framework/runtime versions, entry points, routes, environment files, database layer, auth, storage, tests, linting, CI, and deployment config.
 3. Read relevant existing code before modifying it.
 4. Locate design tokens/components and reuse established conventions.
 5. Check current git status/diff when available; avoid overwriting unrelated user work.
 6. Determine greenfield vs existing application.
 7. Identify build/run/test commands from package metadata and project docs.
+8. Detect existing conventions before introducing new libraries or architectural patterns.
 
 For greenfield projects, initialize only the stack needed by confirmed requirements.
 
@@ -149,15 +145,29 @@ Before implementation, derive an internal model containing:
 
 This is an internal working model. Do not create a PRD/TRD unless asked.
 
-For ambiguous requirements, make the safest reasonable assumption, mention it briefly, and keep moving. Ask only when a wrong assumption could materially change cost, security, data loss, or product behavior.
+For ambiguity, make the safest reasonable assumption and keep moving. Ask only when a wrong assumption could materially change cost, security, data loss, or product behavior.
 
 ---
 
-# STEP 4 — IMPLEMENT DIRECTLY
+# STEP 4 — STACK & ARCHITECTURE INTELLIGENCE
 
-## 4.1 Architecture
+For greenfield work, select the stack from requirements, not fashion. For existing work, preserve the current stack unless a migration is explicitly required.
 
-Choose architecture from requirements, not fashion.
+Use `references/stack-selection.md` before greenfield selection. Then load the matching playbook:
+- Next.js/React → `references/framework-next-react.md`
+- Vue/Nuxt → `references/framework-vue-nuxt.md`
+- Supabase/Firebase/FastAPI/PostgreSQL → `references/backend-platforms.md`
+- Tailwind/shadcn/ui → `references/styling-ui.md`
+
+Use `references/architecture.md` for boundaries, caching, jobs, services, and deployment shape.
+
+Do not upgrade major framework versions as a side effect of an unrelated feature.
+
+---
+
+# STEP 5 — IMPLEMENT DIRECTLY
+
+## 5.1 Architecture
 
 - Prefer one deployable application when boundaries and scale allow it.
 - Introduce separate services only for clear operational/domain reasons.
@@ -169,125 +179,41 @@ Choose architecture from requirements, not fashion.
 - Keep domain rules out of presentation components.
 - Avoid premature abstractions; extract only repeated or stable concepts.
 
-See `references/architecture.md` for the architecture decision matrix and implementation patterns.
-
-## 4.2 Routing and pages
+## 5.2 Routing and pages
 
 Implement all required public and authenticated routes.
 
-Every meaningful route needs appropriate:
-- loading behavior
-- empty state
-- error state
-- responsive layout
-- authorization
-- metadata
-- cache/revalidation strategy where applicable
+Every meaningful route needs appropriate loading, empty, error, responsive, authorization, metadata, and caching/revalidation behavior.
 
 Never protect a route only by hiding UI; enforce authorization at the server/data boundary.
 
-## 4.3 Category-specific minimums
+## 5.3 Category-specific minimums
 
-**SaaS**
-- landing page
-- auth
-- onboarding when needed
-- workspace/team management
-- invitations
-- dashboard
-- billing/subscription boundary
-- usage limits
-- API keys when required
+**SaaS:** landing, auth, onboarding when needed, workspace/team management, invitations, dashboard, billing boundary, usage limits, API keys when required.
 
-**E-commerce**
-- catalog
-- product details
-- search/filter/sort
-- cart
-- checkout
-- order confirmation/history
-- inventory/admin where required
-- taxes/shipping rules when applicable
+**E-commerce:** catalog, product details, search/filter/sort, cart, checkout, order confirmation/history, inventory/admin where required, taxes/shipping where applicable.
 
-**Marketplace**
-- buyer/seller roles
-- listings
-- search/filter
-- listing creation/editing
-- transaction/order boundary
-- ratings/reviews
-- seller dashboard
-- moderation/admin controls when needed
+**Marketplace:** buyer/seller roles, listings, search/filter, listing CRUD, transaction boundary, ratings/reviews, seller dashboard, moderation where needed.
 
-**Blog/CMS**
-- public posts
-- categories/tags
-- search
-- author pages
-- admin/editor
-- drafts/publish/unpublish
-- RSS/newsletter when requested
+**Blog/CMS:** public posts, categories/tags, search, author pages, editor/admin, draft/publish lifecycle, RSS/newsletter when requested.
 
-**Booking**
-- services
-- availability
-- booking creation
-- confirmation
-- cancellations/rescheduling
-- reminder boundary
-- provider/admin management
-- timezone handling
+**Booking:** services, availability, booking creation, confirmation, cancellation/rescheduling, reminder boundary, provider/admin management, timezone handling.
 
-**Education**
-- courses
-- lessons
-- enrollment
-- progress
-- quizzes
-- certificates where required
-- instructor/admin management
+**Education:** courses, lessons, enrollment, progress, quizzes, certificates where required, instructor/admin management.
 
-**Portfolio**
-- home
-- project gallery
-- case studies
-- about/services
-- contact
-- resume/download boundary
+**Portfolio:** home, projects, case studies, about/services, contact, resume/download boundary.
 
-**Admin Dashboard**
-- KPI cards
-- tables
-- filtering/search
-- charts where data warrants it
-- bulk actions
-- exports
-- audit logs
-- role/permission enforcement
+**Admin Dashboard:** KPI cards, tables, filtering/search, useful charts, bulk actions, exports, audit logs, role/permission enforcement.
 
-**AI Tool**
-- input experience
-- streaming/progressive output when supported
-- history
-- usage/credits if needed
-- model/provider abstraction
-- retry/error handling
-- abuse/rate-limit controls
-- prompt/data privacy boundaries
+**AI Tool:** input, streaming/progressive output when supported, history, usage/credits when needed, model/provider abstraction, retry/error handling, abuse/rate limits, privacy boundaries.
 
-**Membership**
-- public content
-- member accounts
-- gated content
-- tiers
-- subscription boundary
-- profile/community features when requested
+**Membership:** public content, member accounts, gated content, tiers, subscription boundary, profile/community features when requested.
 
-For deeper category patterns, use `references/project-patterns.md`.
+Use `references/project-patterns.md` for deeper patterns. Do not implement feature lists that the actual requirements do not need.
 
 ---
 
-# STEP 5 — FRONTEND, UI & ACCESSIBILITY
+# STEP 6 — FRONTEND, UI & ACCESSIBILITY
 
 Build polished interfaces rather than generic templates.
 
@@ -310,14 +236,13 @@ Build polished interfaces rather than generic templates.
 
 Reuse existing component libraries when present. Build reusable primitives only where repetition or consistency justifies them.
 
-See `references/frontend-ui.md` and `references/accessibility.md`.
+Load `references/frontend-ui.md`, `references/accessibility.md`, and `references/styling-ui.md` when relevant.
 
 ---
 
-# STEP 6 — DATA, API & INTEGRATIONS
+# STEP 7 — DATA, API, AUTH & SECURITY
 
 For every data-backed feature:
-
 - validate untrusted input on the server
 - use typed request/response contracts
 - handle not-found, conflict, unauthorized, forbidden, and rate-limit cases
@@ -328,53 +253,60 @@ For every data-backed feature:
 - use transactions for multi-write invariants
 - use idempotency for payment/webhook operations where appropriate
 - keep API errors consistent and actionable
-- do not expose internal IDs/secrets/private fields unnecessarily
+- do not expose private fields unnecessarily
 
-See `references/backend-data.md` and `references/integrations.md`.
-
----
-
-# STEP 7 — AUTH, SECURITY & PRIVACY
-
-Minimum baseline:
-
-- authentication appropriate to the threat model
+Security baseline:
 - server-side authorization/RBAC
 - secure session/token handling
-- input validation and output encoding
 - CSRF/origin protection where applicable
 - rate limiting where applicable
 - secure upload handling
 - security headers
-- safe redirect handling
+- safe redirects
 - secret management
-- audit logs for privileged actions
 - webhook signature verification
 - dependency hygiene
 - privacy-aware logging
 
 Treat every client value as untrusted. Never trust a disabled button, hidden route, role stored only in the browser, or client-side price.
 
-See `references/auth-security.md`.
+Load `references/backend-data.md` and `references/auth-security.md` for deeper guidance.
 
 ---
 
-# STEP 8 — SEO, PERFORMANCE & OBSERVABILITY
+# STEP 8 — INTEGRATIONS
 
-## SEO
+For payments, email, storage, search, analytics, AI, OAuth, maps, or external APIs:
+
+1. inspect existing integrations first
+2. isolate provider-specific code
+3. validate environment configuration
+4. set timeouts and safe retries
+5. map provider errors to domain errors
+6. verify webhooks
+7. implement idempotency where side effects can repeat
+8. make optional dependencies fail gracefully
+9. never expose secrets to the browser
+
+Load `references/integrations.md` when relevant.
+
+---
+
+# STEP 9 — SEO, PERFORMANCE & OBSERVABILITY
+
 For public pages, implement as appropriate:
 - unique title/description
 - canonical URL
 - OpenGraph/social metadata
-- structured data appropriate to the page type
+- structured data matching visible content
 - sitemap
-- robots.txt
+- robots policy
 - semantic headings
 - internal linking
-- image alt text
+- alt text
 - noindex for private/admin/draft routes
 
-## Performance
+Performance:
 - responsive images
 - lazy loading where appropriate
 - code splitting
@@ -386,14 +318,21 @@ For public pages, implement as appropriate:
 - minimal client JavaScript
 - avoid layout shift
 
-## Observability
-For production-worthy apps, add useful structured logs, error reporting boundaries, health checks, and basic metrics where the stack supports them. Do not log secrets, tokens, passwords, payment details, or unnecessary personal data.
+Observability:
+- structured logs where useful
+- request/correlation IDs where useful
+- error reporting
+- health/readiness checks
+- latency/error metrics where appropriate
+- background-job failure visibility
 
-See `references/seo-performance.md`.
+Never log passwords, tokens, API keys, payment credentials, or unnecessary personal data.
+
+Load `references/seo-performance.md` when relevant.
 
 ---
 
-# STEP 9 — CI/CD & RELEASE
+# STEP 10 — CI/CD & RELEASE
 
 Generate only workflows the actual project needs.
 
@@ -415,7 +354,7 @@ Use `references/cicd-hosting.md` for deployment and pipeline patterns.
 
 ---
 
-# STEP 10 — TEST, BROWSER-VERIFY & SELF-REVIEW
+# STEP 11 — TEST, BROWSER-VERIFY & SELF-REVIEW
 
 After implementation:
 
@@ -434,7 +373,7 @@ After implementation:
 ### Definition of done
 
 A feature is done only when:
-- the requested behavior exists in real code
+- requested behavior exists in real code
 - happy path works
 - important failure paths are handled
 - data/auth boundaries are enforced
@@ -442,11 +381,11 @@ A feature is done only when:
 - required checks pass or known failures are explicitly reported
 - no fake production path remains
 
-See `references/testing-qa.md`.
+Load `references/testing-qa.md` for the detailed verification matrix.
 
 ---
 
-# STEP 11 — FAILURE RECOVERY
+# STEP 12 — FAILURE RECOVERY
 
 When a command fails:
 
@@ -457,7 +396,7 @@ When a command fails:
 5. rerun the failed check
 6. rerun adjacent checks if the fix could affect them
 
-Do not solve build failures by deleting tests, disabling lint rules globally, weakening authorization, or hiding errors unless that change is itself justified and requested.
+Do not solve build failures by deleting tests, disabling lint rules globally, weakening authorization, or hiding errors unless that change is itself justified.
 
 ---
 
@@ -465,21 +404,9 @@ Do not solve build failures by deleting tests, disabling lint rules globally, we
 
 The deliverable is the codebase.
 
-Do NOT answer with:
-- a PRD/TRD when implementation was requested
-- an AI coding prompt instead of implementation
-- pseudo-code instead of implementation
-- a file list without creating/editing the files
-- a fake "done" state
+Do NOT answer with a PRD/TRD, AI coding prompt, pseudo-code, file list without edits, or fake completion when implementation was requested.
 
-Instead:
-1. create/edit files
-2. install required dependencies
-3. run the app/checks
-4. inspect failures
-5. fix failures
-6. verify critical flows
-7. summarize what actually changed
+Instead: create/edit files → install dependencies → run app/checks → inspect failures → fix → verify → summarize actual changes.
 
 If the task is too large for one pass, implement the highest-value complete vertical slice first and continue. Never fake completion.
 
@@ -487,23 +414,37 @@ If the task is too large for one pass, implement the highest-value complete vert
 
 # REFERENCE ROUTER
 
-Do not load every reference for every task. Use progressive disclosure:
+Use progressive disclosure. Do not read every reference for every task.
 
 | Situation | Reference |
 |---|---|
-| architecture, monolith vs services, boundaries | `references/architecture.md` |
-| components, responsive UI, forms, states | `references/frontend-ui.md` |
-| WCAG/accessibility/keyboard/screen readers | `references/accessibility.md` |
-| schemas, migrations, API contracts, queries | `references/backend-data.md` |
-| auth, RBAC, sessions, uploads, webhooks | `references/auth-security.md` |
-| SEO, Core Web Vitals, caching, observability | `references/seo-performance.md` |
-| testing strategy, browser QA, acceptance checks | `references/testing-qa.md` |
-| SaaS/e-commerce/marketplace/CMS/booking patterns | `references/project-patterns.md` |
-| payments, email, storage, search, AI, third-party APIs | `references/integrations.md` |
-| deployment, CI/CD, environments, releases | `references/cicd-hosting.md` |
-| document/section/reference compatibility from the original blueprint | `references/documents.md`, `references/sections.md` |
+| stack selection, versions, dependency decisions | `references/stack-selection.md` |
+| architecture, boundaries, caching, jobs, services | `references/architecture.md` |
+| Next.js / React | `references/framework-next-react.md` |
+| Vue / Nuxt | `references/framework-vue-nuxt.md` |
+| UI/components/responsive/forms | `references/frontend-ui.md` |
+| accessibility | `references/accessibility.md` |
+| Tailwind/shadcn/themes | `references/styling-ui.md` |
+| database/API/data modeling | `references/backend-data.md` |
+| Supabase/Firebase/FastAPI/PostgreSQL | `references/backend-platforms.md` |
+| auth/RBAC/security/privacy | `references/auth-security.md` |
+| payments/email/storage/search/AI/OAuth | `references/integrations.md` |
+| SEO/performance/observability | `references/seo-performance.md` |
+| testing/browser QA | `references/testing-qa.md` |
+| product-specific patterns | `references/project-patterns.md` |
+| CI/CD/deployment/releases | `references/cicd-hosting.md` |
+| original blueprint document compatibility | `references/documents.md`, `references/sections.md` |
 
-Read only the references relevant to the current task, then return to implementation.
+### Reference loading algorithm
+
+1. Detect the stack from repository manifests/config.
+2. Detect the requested feature/category.
+3. Load only the matching reference(s).
+4. Implement using the reference plus project conventions.
+5. Validate.
+6. Load another reference only if a newly discovered concern requires it.
+
+References provide guidance; they do not override explicit user requirements or project contracts.
 
 ---
 
