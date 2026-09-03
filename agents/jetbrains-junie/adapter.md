@@ -1,0 +1,1 @@
+Native guidance: root `AGENTS.md`; canonical skill: `skills/web-builder/SKILL.md`.
