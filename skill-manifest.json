@@ -1,25 +1,48 @@
 {
+  "schema_version": "1.0",
   "name": "web-blueprint-engine",
-  "version": "5.0.0",
+  "version": "7.0.0",
   "type": "agent-skill",
   "standard": "agentskills",
-  "description": "Universal direct-build website engineering skill. Same discovery questions, direct implementation, tests and verification.",
-  "entrypoint": "skill/SKILL.md",
+  "portable": true,
+  "canonical_entrypoint": "skill/SKILL.md",
+  "description": "Universal direct-build website and web-app engineering skill with cross-agent discovery, non-destructive installation, multi-agent safety, implementation, testing, and browser verification.",
   "install": {
-    "command": "python3 installer/install.py",
-    "global": "python3 installer/install.py --global"
+    "python": "python3 installer/install.py",
+    "shell": "./installer/install.sh",
+    "powershell": "./installer/install.ps1",
+    "detect": "python3 installer/install.py --detect",
+    "project": "python3 installer/install.py --project --targets auto",
+    "all_project": "python3 installer/install.py --project --targets all",
+    "global": "python3 installer/install.py --global --targets all"
   },
   "discovery": {
     "project": [
+      ".agents/skills/web-blueprint-engine/SKILL.md",
       ".claude/skills/web-blueprint-engine/SKILL.md",
-      ".opencode/skills/web-blueprint-engine/SKILL.md",
-      ".agents/skills/web-blueprint-engine/SKILL.md"
+      ".opencode/skills/web-blueprint-engine/SKILL.md"
     ],
     "global": [
+      "~/.agents/skills/web-blueprint-engine/SKILL.md",
       "~/.claude/skills/web-blueprint-engine/SKILL.md",
       "~/.config/opencode/skills/web-blueprint-engine/SKILL.md",
-      "~/.agents/skills/web-blueprint-engine/SKILL.md",
       "~/.gemini/config/skills/web-blueprint-engine/SKILL.md"
-    ]
+    ],
+    "fallback_instructions": ["AGENTS.md", "CLAUDE.md"]
+  },
+  "agents": [
+    "claude-code",
+    "opencode",
+    "codex",
+    "google-antigravity",
+    "agent-skills-compatible",
+    "generic/custom"
+  ],
+  "safety": {
+    "project_local_default": true,
+    "global_install_opt_in": true,
+    "overwrite_different_skill_by_default": false,
+    "remote_code_execution": false,
+    "secret_storage": false
   }
 }
