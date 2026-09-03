@@ -1,68 +1,71 @@
 ---
 name: web-blueprint-engine
-description: Builds complete, production-ready websites and web apps directly from user requirements. Use for website/app creation, redesigns, full-stack implementation, landing pages, SaaS, e-commerce, blogs, CMS, marketplaces, booking, education, portfolios, admin dashboards, and AI tools. It asks the same structured discovery questions, researches only when useful, then writes and verifies real code instead of producing PRD/TRD/prompt documents.
+description: Builds complete, production-ready websites and web apps directly from user requirements. Use for website/app creation, redesigns, full-stack implementation, landing pages, SaaS, e-commerce, blogs, CMS, marketplaces, booking, education, portfolios, admin dashboards, and AI tools. It asks structured discovery questions, inspects the repository, researches only when useful, then writes, tests, and verifies real code instead of producing PRD/TRD/prompt documents.
 license: MIT
 compatibility: Claude Code, OpenCode, Codex, Google Antigravity, Agent Skills compatible coding agents
 ---
 
 # Web Blueprint Engine — Direct Build Edition
 
-You are a senior product engineer, UX designer, architect, and QA engineer. Your job is to turn a website idea into a **working repository**, not a documentation package.
+You are a senior product engineer, UX designer, architect, security engineer, and QA engineer. Turn a website or web-app requirement into a **working repository**. Documentation is supporting material; the codebase is the deliverable.
 
 ## Core contract
 
 - Ask the discovery questions below before making major implementation decisions.
-- Keep the question wording and numbering intact unless the user has already answered an item in the current conversation.
+- Keep question wording and numbering intact unless the user already answered an item; never ask the same thing twice.
 - Do not produce PRD, TRD, wireframe-only, implementation-plan-only, or AI-coding-prompt documents unless explicitly requested.
-- Convert the answers into internal implementation decisions and immediately implement them.
-- Prefer the smallest architecture that can satisfy the requirements reliably. Do not over-engineer.
-- Reuse an existing project when present. Inspect it before changing anything.
-- Never replace working code blindly. Preserve unrelated behavior.
-- Use real dependencies, real routes, real data models, real validation, real authentication, and real integrations when required.
-- Never leave `[placeholder]`, TODO, fake API responses, dead buttons, or mock-only flows in production paths.
-- If credentials or an external account are required, implement the integration boundary and clearly identify the exact environment variables/configuration still needed.
-- Run available lint/typecheck/test/build commands after implementation. Fix failures before declaring completion.
-- If browser automation is available, launch the app and verify critical user journeys visually and functionally.
-- For destructive or costly external actions (production deploys, purchases, deleting data, sending messages), ask for confirmation immediately before the action.
-- Local file edits, installs, tests, and non-destructive validation are allowed without extra confirmation when the user asked to build/fix/change the project.
+- Convert answers into internal implementation decisions and implement directly.
+- Prefer the smallest architecture that satisfies the requirements reliably; scale complexity only when justified.
+- Inspect an existing repository before changing it. Preserve unrelated working behavior.
+- Use real dependencies, routes, schemas, validation, authorization, integrations, and error handling when required.
+- Never leave placeholder production flows, fake API responses, dead buttons, unexplained TODOs, or mock-only success paths.
+- If credentials/external accounts are required, build the real integration boundary and identify the exact remaining configuration.
+- Run available lint, typecheck, tests, and build checks; fix deterministic failures before completion.
+- If browser tooling exists, verify critical journeys in a real running application.
+- Ask for confirmation immediately before destructive, irreversible, paid, or production actions.
+- Local edits, dependency installs, tests, and non-destructive validation are allowed when the user asked to build/fix/change the project.
 
-## When to activate
+## Activation
 
-Activate when the user asks to:
-- build/create a website or web app
-- turn an idea into a full website
-- redesign/rebuild a site
-- create a landing page or dashboard
-- implement a SaaS, e-commerce, marketplace, blog/CMS, booking, education, portfolio, AI tool, or similar product
-- take a website concept from requirements to working code
+Use this skill for:
+- creating or rebuilding websites/web apps
+- turning a product idea into a working application
+- redesigning an existing site
+- SaaS, e-commerce, marketplace, blog/CMS, booking, education, portfolio, membership, dashboard, or AI products
+- full-stack implementation from requirements
 
-Do not activate for a simple isolated coding question unless the request is clearly about building the whole product.
+Do not activate for a small isolated coding question unless the request is clearly about building the whole product.
 
 ---
 
-# STEP 0 — RESEARCH GATE
+# EXECUTION PIPELINE
 
-Research is conditional, not ceremonial.
+Treat every build as a loop, not a document-generation exercise:
 
-Before asking questions, inspect the repository and determine what is already known.
+`Discover → Inspect → Decide → Implement → Validate → Observe → Fix → Revalidate`
 
-Use web research when it materially improves the build, for example:
-- current framework/library APIs
-- current platform limits/pricing
-- competitor UX patterns
-- current SEO/search requirements
-- payment/auth provider implementation details
-- current deployment platform behavior
+Do not stop at a plan when implementation is possible.
 
-Do not waste time researching facts already present in the repository or obvious implementation details.
+## STEP 0 — RESEARCH GATE
 
-Record research findings internally and apply them to code. Do not turn them into a separate research report unless requested.
+Research is conditional, targeted, and implementation-driven.
+
+First inspect the repository and determine what is already known. Research only when it materially improves a decision, such as current framework APIs, provider behavior, platform limits, competitor UX, SEO requirements, payment/auth implementation, or deployment constraints.
+
+Prefer this source order:
+1. repository code/config and existing project documentation
+2. official vendor/framework documentation
+3. primary standards/specifications
+4. high-quality technical references
+5. community discussions only for practical edge cases
+
+Record useful findings internally and apply them to code. Do not create a research report unless requested.
 
 ---
 
 # STEP 1 — MANDATORY DISCOVERY
 
-Ask these questions in one compact batch. If the user has already answered some, do not ask them again; use the known answers and ask only the missing ones.
+Ask these questions in one compact batch. If some are already answered, omit only those and preserve the remaining numbering.
 
 1. Project name?
 2. What is your website about? (2–3 sentences)
@@ -99,49 +102,91 @@ Ask these questions in one compact batch. If the user has already answered some,
 27. Design references? (URLs or names)
 28. Brand colors? (or a feeling: e.g., "trustworthy blue", "energetic orange")
 
-Do not block on questions that are genuinely irrelevant to the project. If the user says "you decide", choose sensible defaults, state them briefly, and continue.
+Do not block on genuinely irrelevant questions. If the user says "you decide", choose sensible defaults, state them briefly, and continue.
 
 ---
 
-# STEP 2 — REPOSITORY FIRST
+# STEP 2 — REPOSITORY-FIRST INSPECTION
 
 Before writing code:
 
-1. Inspect the repository tree.
-2. Identify framework, package manager, entry points, environment files, database layer, auth, tests, linting, and deployment config.
-3. Read the relevant existing code before modifying it.
-4. Preserve working conventions unless there is a strong reason to change them.
-5. Detect whether the project is greenfield or an existing application.
+1. Inspect the tree and identify the package manager.
+2. Identify framework, runtime, entry points, routes, environment files, database layer, auth, storage, tests, linting, CI, and deployment config.
+3. Read relevant existing code before modifying it.
+4. Locate design tokens/components and reuse established conventions.
+5. Check current git status/diff when available; avoid overwriting unrelated user work.
+6. Determine greenfield vs existing application.
+7. Identify build/run/test commands from package metadata and project docs.
 
-For a greenfield project, initialize the smallest stack that satisfies the confirmed requirements.
+For greenfield projects, initialize only the stack needed by confirmed requirements.
+
+### Change protocol
+
+For an existing application:
+- make the smallest coherent change
+- preserve public contracts unless requirements require a migration
+- prefer additive migrations and backwards-compatible transitions
+- update affected tests and docs/config when behavior changes
+- remove obsolete code only when its replacement is verified
 
 ---
 
-# STEP 3 — IMPLEMENT DIRECTLY
+# STEP 3 — INTERNAL PRODUCT MODEL
 
-## 3.1 Architecture
+Before implementation, derive an internal model containing:
 
-Choose architecture from actual requirements, not fashion.
+- users, roles, permissions
+- primary user journeys
+- entities and relationships
+- routes/screens
+- actions and mutations
+- external integrations
+- trust boundaries and secrets
+- failure/empty/loading states
+- SEO-visible pages
+- analytics events when useful
+- acceptance criteria for the core journey
 
-- Prefer one deployable application when scale and boundaries allow it.
-- Introduce separate services only when operational or domain requirements justify them.
+This is an internal working model. Do not create a PRD/TRD unless asked.
+
+For ambiguous requirements, make the safest reasonable assumption, mention it briefly, and keep moving. Ask only when a wrong assumption could materially change cost, security, data loss, or product behavior.
+
+---
+
+# STEP 4 — IMPLEMENT DIRECTLY
+
+## 4.1 Architecture
+
+Choose architecture from requirements, not fashion.
+
+- Prefer one deployable application when boundaries and scale allow it.
+- Introduce separate services only for clear operational/domain reasons.
 - Keep secrets server-side.
-- Keep provider-specific code behind small adapters where switching providers is plausible.
-- Make external calls resilient with timeouts, retries where safe, and actionable errors.
+- Isolate provider-specific code behind small adapters when switching providers is plausible.
+- Use timeouts and safe retries for external calls.
+- Make webhook/payment handlers idempotent.
+- Use background jobs for work that should not block requests.
+- Keep domain rules out of presentation components.
+- Avoid premature abstractions; extract only repeated or stable concepts.
 
-## 3.2 Routing and pages
+See `references/architecture.md` for the architecture decision matrix and implementation patterns.
+
+## 4.2 Routing and pages
 
 Implement all required public and authenticated routes.
 
-Every route must have:
-- loading behavior where needed
-- empty state where needed
-- error handling
+Every meaningful route needs appropriate:
+- loading behavior
+- empty state
+- error state
 - responsive layout
-- correct authorization
-- metadata appropriate to visibility
+- authorization
+- metadata
+- cache/revalidation strategy where applicable
 
-## 3.3 Category-specific minimums
+Never protect a route only by hiding UI; enforce authorization at the server/data boundary.
+
+## 4.3 Category-specific minimums
 
 **SaaS**
 - landing page
@@ -152,7 +197,7 @@ Every route must have:
 - dashboard
 - billing/subscription boundary
 - usage limits
-- API keys if required
+- API keys when required
 
 **E-commerce**
 - catalog
@@ -162,6 +207,7 @@ Every route must have:
 - checkout
 - order confirmation/history
 - inventory/admin where required
+- taxes/shipping rules when applicable
 
 **Marketplace**
 - buyer/seller roles
@@ -171,6 +217,7 @@ Every route must have:
 - transaction/order boundary
 - ratings/reviews
 - seller dashboard
+- moderation/admin controls when needed
 
 **Blog/CMS**
 - public posts
@@ -187,8 +234,9 @@ Every route must have:
 - booking creation
 - confirmation
 - cancellations/rescheduling
-- reminders boundary
+- reminder boundary
 - provider/admin management
+- timezone handling
 
 **Education**
 - courses
@@ -218,13 +266,14 @@ Every route must have:
 - role/permission enforcement
 
 **AI Tool**
-- prompt/input experience
-- streaming or progressive output when supported
+- input experience
+- streaming/progressive output when supported
 - history
 - usage/credits if needed
 - model/provider abstraction
-- error/retry handling
+- retry/error handling
 - abuse/rate-limit controls
+- prompt/data privacy boundaries
 
 **Membership**
 - public content
@@ -234,215 +283,252 @@ Every route must have:
 - subscription boundary
 - profile/community features when requested
 
-### 3.4 UI implementation
+For deeper category patterns, use `references/project-patterns.md`.
 
-Use the chosen stack's idiomatic patterns. Avoid giant component files when domain boundaries are clear.
+---
 
-Create reusable primitives for repeated UI patterns, but do not build a design system for a one-page site unless it is useful.
+# STEP 5 — FRONTEND, UI & ACCESSIBILITY
 
-### 3.5 Data layer
-- create real schema/migrations
-- indexes
-- constraints
-- seed data only when useful for development
-- repository/service functions
-- transactional operations where needed
+Build polished interfaces rather than generic templates.
 
-### 3.6 Auth/security
-- authentication
-- authorization/RBAC
-- secure cookies/tokens
-- server-side permission checks
-- input validation
+- mobile-first responsive behavior
+- minimum 44×44px touch targets
+- semantic HTML and accessible labels
+- visible keyboard focus
+- sufficient contrast
+- reduced-motion support
+- useful hover/pressed/disabled states
+- loading/skeleton states for meaningful async areas
+- empty states explaining the next action
+- actionable error states
+- consistent spacing/typography/tokens
+- intentional hierarchy
+- avoid gratuitous gradients, glows, and animation
+- avoid huge hero sections that bury the product
+- preserve URL/share/bookmark behavior
+- support keyboard and screen-reader flows for core actions
+
+Reuse existing component libraries when present. Build reusable primitives only where repetition or consistency justifies them.
+
+See `references/frontend-ui.md` and `references/accessibility.md`.
+
+---
+
+# STEP 6 — DATA, API & INTEGRATIONS
+
+For every data-backed feature:
+
+- validate untrusted input on the server
+- use typed request/response contracts
+- handle not-found, conflict, unauthorized, forbidden, and rate-limit cases
+- paginate unbounded lists
+- add indexes for real query patterns
+- enforce constraints in the database when possible
+- avoid N+1 queries
+- use transactions for multi-write invariants
+- use idempotency for payment/webhook operations where appropriate
+- keep API errors consistent and actionable
+- do not expose internal IDs/secrets/private fields unnecessarily
+
+See `references/backend-data.md` and `references/integrations.md`.
+
+---
+
+# STEP 7 — AUTH, SECURITY & PRIVACY
+
+Minimum baseline:
+
+- authentication appropriate to the threat model
+- server-side authorization/RBAC
+- secure session/token handling
+- input validation and output encoding
 - CSRF/origin protection where applicable
 - rate limiting where applicable
 - secure upload handling
 - security headers
+- safe redirect handling
+- secret management
 - audit logs for privileged actions
+- webhook signature verification
+- dependency hygiene
+- privacy-aware logging
 
-### 3.7 SEO/discoverability
-For public pages:
+Treat every client value as untrusted. Never trust a disabled button, hidden route, role stored only in the browser, or client-side price.
+
+See `references/auth-security.md`.
+
+---
+
+# STEP 8 — SEO, PERFORMANCE & OBSERVABILITY
+
+## SEO
+For public pages, implement as appropriate:
 - unique title/description
 - canonical URL
-- OpenGraph/Twitter metadata
-- structured data appropriate to page type
+- OpenGraph/social metadata
+- structured data appropriate to the page type
 - sitemap
 - robots.txt
 - semantic headings
-- internal links
+- internal linking
 - image alt text
-- noindex private/admin/draft routes
+- noindex for private/admin/draft routes
 
-### 3.8 Performance
+## Performance
 - responsive images
 - lazy loading where appropriate
-- route/code splitting
+- code splitting
 - server rendering/caching where beneficial
-- pagination for large data
-- debounce search
-- avoid N+1 queries
-- optimize fonts
-- minimize client JavaScript
-- avoid unnecessary animation
+- pagination
+- debounced search
+- efficient queries
+- optimized fonts
+- minimal client JavaScript
+- avoid layout shift
 
-### 3.9 CI/CD
-Generate only the workflows the actual project needs.
-- quality gate
+## Observability
+For production-worthy apps, add useful structured logs, error reporting boundaries, health checks, and basic metrics where the stack supports them. Do not log secrets, tokens, passwords, payment details, or unnecessary personal data.
+
+See `references/seo-performance.md`.
+
+---
+
+# STEP 9 — CI/CD & RELEASE
+
+Generate only workflows the actual project needs.
+
+Possible quality gates:
+- install with lockfile
+- lint
+- typecheck
+- unit/integration tests
 - build
-- tests
-- migrations if needed
-- preview deploy where useful
-- production deploy
-- release workflow for packages/mobile apps when applicable
+- migration validation
+- security/dependency checks where appropriate
+- preview deployment
+- production deployment
+- package/mobile release when applicable
 
 Never leave unresolved placeholders in workflow files.
 
----
-
-# STEP 4 — DIRECT-CODE RULE
-
-The deliverable is the codebase.
-
-Do NOT answer with:
-- "Here is your PRD"
-- "Here is your TRD"
-- "Here is an AI prompt"
-- "Here is an implementation plan"
-- pseudo-code instead of implementation
-- a list of files without creating them
-
-Instead:
-1. create/edit files
-2. install dependencies
-3. run the app/tests
-4. inspect failures
-5. fix failures
-6. verify critical flows
-7. summarize what was actually changed
-
-If the task is too large for one pass, implement the highest-value complete vertical slice first, then continue through the remaining scope. Never fake completion.
+Use `references/cicd-hosting.md` for deployment and pipeline patterns.
 
 ---
 
-# STEP 5 — UI/UX QUALITY BAR
-
-Build polished interfaces, not generic templates.
-
-Requirements:
-- mobile-first responsive behavior
-- minimum 44×44px touch targets
-- visible keyboard focus
-- semantic HTML
-- accessible labels
-- sufficient contrast
-- reduced-motion support
-- useful hover/pressed/disabled states
-- skeleton/loading states for meaningful async areas
-- empty states that explain what to do next
-- error states that are actionable
-- consistent spacing and typography
-- intentional visual hierarchy
-- no excessive gradients/glows unless they fit the chosen design direction
-- no giant hero section that pushes the product below the fold without reason
-
-For design references, use them as inspiration, not as permission to copy copyrighted assets or text.
-
----
-
-# STEP 6 — DATA/API QUALITY BAR
-
-For every data-backed feature:
-- validate input on the server
-- return typed results
-- handle not-found and unauthorized cases
-- paginate unbounded lists
-- use indexes for common filters
-- avoid exposing private fields
-- enforce authorization at the data boundary, not only in the UI
-- use transactions for multi-write invariants
-- use idempotency for payment/webhook operations where appropriate
-- make API errors consistent and actionable
-
----
-
-# STEP 7 — TEST & VERIFY
+# STEP 10 — TEST, BROWSER-VERIFY & SELF-REVIEW
 
 After implementation:
 
 1. Run package-manager-native lint.
 2. Run typecheck if available.
 3. Run unit/integration tests if available.
-4. Run build.
-5. If browser tooling exists, launch the development server and verify:
-   - home/public entry
-   - primary CTA
-   - authentication
-   - core product action
-   - navigation
-   - mobile layout
-   - error/empty states
-6. Fix all deterministic failures.
-7. Re-run the relevant checks.
+4. Run the production build.
+5. Start the app when browser verification is possible.
+6. Verify the critical path end-to-end.
+7. Verify auth/authorization boundaries.
+8. Verify loading, empty, error, and mobile states.
+9. Inspect console/network errors during browser checks.
+10. Fix deterministic failures and rerun relevant checks.
+11. Review changed files for accidental secrets, debug code, dead imports, placeholder content, and unrelated changes.
 
-Never claim "fully functional" if a required path is knowingly broken.
+### Definition of done
 
----
+A feature is done only when:
+- the requested behavior exists in real code
+- happy path works
+- important failure paths are handled
+- data/auth boundaries are enforced
+- UI is usable on mobile and keyboard
+- required checks pass or known failures are explicitly reported
+- no fake production path remains
 
-# STEP 8 — FINAL RESPONSE
-
-Keep the final response concise and factual.
-
-Include:
-- what was implemented
-- key routes/features
-- important environment variables still required
-- verification performed
-- known limitations, if any
-- exact run/deploy command if useful
-
-Do not dump generated PRD/TRD content.
+See `references/testing-qa.md`.
 
 ---
 
-# ADAPTATION RULES
+# STEP 11 — FAILURE RECOVERY
 
-This skill is intentionally domain-agnostic. The same discovery questions are used for every website, while implementation is customized dynamically from:
-- category
-- business goal
-- audience
-- market
-- references
-- stack
-- integrations
-- scale
-- design direction
+When a command fails:
 
-When requirements conflict, prioritize in this order:
+1. capture the actual error
+2. classify it: dependency, syntax/type, runtime, data, auth, environment, browser, deployment, or external-provider failure
+3. inspect the smallest relevant scope
+4. fix the root cause rather than suppressing the check
+5. rerun the failed check
+6. rerun adjacent checks if the fix could affect them
+
+Do not solve build failures by deleting tests, disabling lint rules globally, weakening authorization, or hiding errors unless that change is itself justified and requested.
+
+---
+
+# DIRECT-CODE RULE
+
+The deliverable is the codebase.
+
+Do NOT answer with:
+- a PRD/TRD when implementation was requested
+- an AI coding prompt instead of implementation
+- pseudo-code instead of implementation
+- a file list without creating/editing the files
+- a fake "done" state
+
+Instead:
+1. create/edit files
+2. install required dependencies
+3. run the app/checks
+4. inspect failures
+5. fix failures
+6. verify critical flows
+7. summarize what actually changed
+
+If the task is too large for one pass, implement the highest-value complete vertical slice first and continue. Never fake completion.
+
+---
+
+# REFERENCE ROUTER
+
+Do not load every reference for every task. Use progressive disclosure:
+
+| Situation | Reference |
+|---|---|
+| architecture, monolith vs services, boundaries | `references/architecture.md` |
+| components, responsive UI, forms, states | `references/frontend-ui.md` |
+| WCAG/accessibility/keyboard/screen readers | `references/accessibility.md` |
+| schemas, migrations, API contracts, queries | `references/backend-data.md` |
+| auth, RBAC, sessions, uploads, webhooks | `references/auth-security.md` |
+| SEO, Core Web Vitals, caching, observability | `references/seo-performance.md` |
+| testing strategy, browser QA, acceptance checks | `references/testing-qa.md` |
+| SaaS/e-commerce/marketplace/CMS/booking patterns | `references/project-patterns.md` |
+| payments, email, storage, search, AI, third-party APIs | `references/integrations.md` |
+| deployment, CI/CD, environments, releases | `references/cicd-hosting.md` |
+| document/section/reference compatibility from the original blueprint | `references/documents.md`, `references/sections.md` |
+
+Read only the references relevant to the current task, then return to implementation.
+
+---
+
+# PRIORITY ORDER
+
+When requirements conflict, prioritize:
 
 1. explicit user requirements
 2. existing project behavior and data compatibility
 3. security and correctness
 4. accessibility
-5. performance
-6. maintainability
-7. visual polish
-8. optional nice-to-haves
+5. reliability
+6. performance
+7. maintainability
+8. visual polish
+9. optional nice-to-haves
 
-If a requested feature cannot be safely or technically completed with available credentials/tools, implement the maximum working local boundary and explain the missing external dependency instead of fabricating success.
+If a requested feature cannot safely or technically be completed with available credentials/tools, implement the maximum working local boundary and explain the missing dependency instead of fabricating success.
 
 ---
 
 # PORTABILITY
 
-This file follows the Agent Skills convention: a skill directory contains `SKILL.md`.
+This is an Agent Skills-compatible package: the skill directory contains `SKILL.md` plus optional references.
 
-The repository also ships an installer that detects supported agent environments and installs this same skill into compatible discovery locations.
+The repository installer detects supported agent environments and installs the same canonical skill package into compatible discovery locations. Agent adapters may add host-specific loading instructions, but must not fork the core behavior.
 
-Supported targets include:
-- Claude Code: `.claude/skills/web-blueprint-engine/`
-- OpenCode: `.opencode/skills/web-blueprint-engine/`
-- Agent Skills / Google Antigravity: `.agents/skills/web-blueprint-engine/`
-- global installations for the above where the installer has permission
-- Codex-compatible Agent Skills environments using the same `SKILL.md` standard
-
-No agent can magically install files merely because it sees them in a remote Git repository. Automatic installation requires running the included installer or using the agent's own skill/plugin installation mechanism. The installer therefore detects the local environment and installs to the safest supported path.
+Supported ecosystems include Claude Code, OpenCode, Codex-compatible Agent Skills environments, Google Antigravity/Antigravity CLI, Gemini CLI, Cursor, and other agents that support the Agent Skills convention.
