@@ -21,12 +21,16 @@ These references are intentionally modular. `SKILL.md` is the operating contract
 | `backend-platforms.md` | Supabase, Firebase, FastAPI, PostgreSQL |
 | `styling-ui.md` | Tailwind, shadcn/ui, themes, component systems |
 | `stack-selection.md` | greenfield stack selection, versions, dependencies |
+| `official-docs.md` | curated official documentation and standards links |
+| `legal-compliance.md` | legal pages, privacy/cookies, consumer terms, UGC/IP, jurisdiction research |
 | `documents.md` | compatibility with the original blueprint document model |
 | `sections.md` | compatibility with the original blueprint section model |
 
 ## Loading rule
 
 Do not read every reference for every task. Load the smallest relevant set based on the detected stack and feature. If a framework/provider API is version-sensitive, inspect the installed version and consult current official documentation before implementation.
+
+For legal/compliance-sensitive builds, load `legal-compliance.md` and use `official-docs.md` to reach primary regulatory and vendor sources. Never treat generated legal copy as guaranteed legal advice.
 
 ## Precedence
 
