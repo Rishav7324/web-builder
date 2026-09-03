@@ -16,12 +16,17 @@ These references are intentionally modular. `SKILL.md` is the operating contract
 | `project-patterns.md` | SaaS, commerce, marketplace, CMS, booking, education, AI |
 | `integrations.md` | payments, email, storage, search, analytics, AI, OAuth |
 | `cicd-hosting.md` | CI/CD, environments, deployment, releases |
+| `framework-next-react.md` | Next.js and React implementation decisions |
+| `framework-vue-nuxt.md` | Vue and Nuxt implementation decisions |
+| `backend-platforms.md` | Supabase, Firebase, FastAPI, PostgreSQL |
+| `styling-ui.md` | Tailwind, shadcn/ui, themes, component systems |
+| `stack-selection.md` | greenfield stack selection, versions, dependencies |
 | `documents.md` | compatibility with the original blueprint document model |
 | `sections.md` | compatibility with the original blueprint section model |
 
 ## Loading rule
 
-Do not read every reference for every task. Load the smallest relevant set, implement, then return to the core verification loop.
+Do not read every reference for every task. Load the smallest relevant set based on the detected stack and feature. If a framework/provider API is version-sensitive, inspect the installed version and consult current official documentation before implementation.
 
 ## Precedence
 
