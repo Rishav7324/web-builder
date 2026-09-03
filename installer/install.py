@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -18,6 +19,7 @@ PROJECT_TARGETS = {
     "claude": Path(".claude/skills") / NAME,
     "opencode": Path(".opencode/skills") / NAME,
     "agents": Path(".agents/skills") / NAME,
+    "codex": Path(".agents/skills") / NAME,
     "antigravity": Path(".agent/skills") / NAME,
     "gemini": Path(".gemini/skills") / NAME,
     "cursor": Path(".cursor/skills") / NAME,
@@ -27,18 +29,35 @@ GLOBAL_TARGETS = {
     "claude": Path.home() / ".claude/skills" / NAME,
     "opencode": Path.home() / ".config/opencode/skills" / NAME,
     "agents": Path.home() / ".agents/skills" / NAME,
+    "codex": Path.home() / ".agents/skills" / NAME,
     "antigravity": Path.home() / ".gemini/config/skills" / NAME,
     "antigravity-cli": Path.home() / ".gemini/antigravity-cli/skills" / NAME,
     "gemini": Path.home() / ".gemini/skills" / NAME,
     "cursor": Path.home() / ".cursor/skills" / NAME,
 }
 
-SIGNALS = {
+# Project-local signals. These are intentionally conservative: a marker must
+# exist in the current project (or its matching environment variable be set).
+PROJECT_SIGNALS = {
     "claude": ("CLAUDE_CODE", ".claude", "CLAUDE.md"),
     "opencode": ("OPENCODE", ".opencode", "opencode.json"),
-    "codex": ("CODEX", "CODEX_CLI", "AGENTS.md"),
-    "antigravity": ("GEMINI_CLI", ".agent", ".agents", ".gemini"),
+    "codex": ("CODEX", "CODEX_CLI", "AGENTS.md", ".codex"),
+    "antigravity": ("GEMINI_CLI", ".agent"),
+    "gemini": ("GEMINI_CLI", ".gemini"),
     "cursor": ("CURSOR", ".cursor"),
+}
+
+# Global signals. Prefer an actual executable or a host-specific config path
+# over generic directories such as ~/.agents or ~/.gemini, which can belong to
+# multiple tools.
+GLOBAL_SIGNALS = {
+    "claude": ("CLAUDE_CODE", "claude", Path.home() / ".claude"),
+    "opencode": ("OPENCODE", "opencode", Path.home() / ".config/opencode"),
+    "codex": ("CODEX", "CODEX_CLI", "codex", Path.home() / ".codex"),
+    "antigravity": ("ANTIGRAVITY", "antigravity", Path.home() / ".agent"),
+    "antigravity-cli": ("ANTIGRAVITY_CLI", "agy", Path.home() / ".gemini/antigravity-cli"),
+    "gemini": ("GEMINI_CLI", "gemini"),
+    "cursor": ("CURSOR", "cursor", Path.home() / ".cursor"),
 }
 
 
@@ -48,6 +67,10 @@ def digest(path: Path) -> str:
         for chunk in iter(lambda: f.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def command_exists(name: str) -> bool:
+    return shutil.which(name) is not None
 
 
 def copy_skill(target: Path, force: bool) -> str:
@@ -78,18 +101,42 @@ def copy_skill(target: Path, force: bool) -> str:
     return f"installed: {target}"
 
 
-def detect() -> list[str]:
+def detect_project() -> list[str]:
     found: list[str] = []
-    for name, signals in SIGNALS.items():
+    for name, signals in PROJECT_SIGNALS.items():
         for signal in signals:
-            if signal.isidentifier():
-                if os.environ.get(signal):
-                    found.append(name)
-                    break
-            elif Path.cwd().joinpath(signal).exists():
+            if signal.isidentifier() and os.environ.get(signal):
                 found.append(name)
                 break
-    return list(dict.fromkeys(found or ["agents"]))
+            if not signal.isidentifier() and Path.cwd().joinpath(signal).exists():
+                found.append(name)
+                break
+    return list(dict.fromkeys(found))
+
+
+def detect_global() -> list[str]:
+    found: list[str] = []
+    for name, signals in GLOBAL_SIGNALS.items():
+        for signal in signals:
+            if isinstance(signal, Path):
+                if signal.exists():
+                    found.append(name)
+                    break
+            elif signal.isidentifier() and os.environ.get(signal):
+                found.append(name)
+                break
+            elif command_exists(signal):
+                found.append(name)
+                break
+    return list(dict.fromkeys(found))
+
+
+def detect(scope: str = "both") -> list[str]:
+    if scope == "project":
+        return detect_project()
+    if scope == "global":
+        return detect_global()
+    return list(dict.fromkeys(detect_project() + detect_global()))
 
 
 def main() -> int:
@@ -106,10 +153,11 @@ def main() -> int:
         return 2
 
     if args.detect:
-        print("\n".join(detect()))
+        scope = "global" if args.global_install else "project" if args.project else "both"
+        print("\n".join(detect(scope)))
         return 0
 
-    # Explicit scope wins. The bootstrap installer passes --global.
+    # Explicit scope wins. The bootstrap installer uses --global.
     if args.project and args.global_install:
         project = global_install = True
     elif args.project:
@@ -120,33 +168,46 @@ def main() -> int:
         project, global_install = True, False
 
     if args.targets == "auto":
-        detected = detect()
-        selected = detected if detected else ["agents"]
+        if global_install:
+            selected = detect_global()
+        elif project:
+            selected = detect_project()
+        else:
+            selected = []
     elif args.targets == "all":
-        selected = list(GLOBAL_TARGETS.keys())
+        selected = list(GLOBAL_TARGETS.keys()) if global_install else list(PROJECT_TARGETS.keys())
     else:
         selected = [x.strip() for x in args.targets.split(",") if x.strip()]
 
-    installed = errors = 0
-    for name in selected:
-        if project and name in PROJECT_TARGETS:
-            try:
-                print(copy_skill(Path.cwd() / PROJECT_TARGETS[name], args.force))
-                installed += 1
-            except OSError as exc:
-                print(f"[skip] project/{name}: {exc}", file=sys.stderr)
-                errors += 1
-        if global_install and name in GLOBAL_TARGETS:
-            try:
-                print(copy_skill(GLOBAL_TARGETS[name], args.force))
-                installed += 1
-            except OSError as exc:
-                print(f"[skip] global/{name}: {exc}", file=sys.stderr)
-                errors += 1
+    # Do not silently install a generic/unknown agent. Explicit --targets can
+    # always be used when the user wants a non-detectable host.
+    if not selected:
+        scope = "global" if global_install else "project"
+        print(f"No supported {scope} agent detected. Nothing was installed.")
+        print("Use --targets all to install for every supported target, or pass a comma-separated target list.")
+        return 0
 
-    if not installed:
-        print("No installation target selected or writable. Use --project or --global.", file=sys.stderr)
-        return 1
+    installed = errors = 0
+    seen_destinations: set[Path] = set()
+    for name in selected:
+        targets = []
+        if project and name in PROJECT_TARGETS:
+            targets.append(("project", Path.cwd() / PROJECT_TARGETS[name]))
+        if global_install and name in GLOBAL_TARGETS:
+            targets.append(("global", GLOBAL_TARGETS[name]))
+
+        for scope, target in targets:
+            # Codex and generic Agent Skills intentionally share ~/.agents/skills.
+            # Avoid installing the same physical directory twice.
+            if target in seen_destinations:
+                continue
+            seen_destinations.add(target)
+            try:
+                print(copy_skill(target, args.force))
+                installed += 1
+            except OSError as exc:
+                print(f"[skip] {scope}/{name}: {exc}", file=sys.stderr)
+                errors += 1
 
     print(f"Installed/verified {installed} target(s); {errors} error(s).")
     return 0 if errors == 0 else 1
