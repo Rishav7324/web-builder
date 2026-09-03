@@ -1,0 +1,1 @@
+Load `skills/web-builder/SKILL.md` for website/web-app work. Ask only missing discovery questions, then implement real code directly. Use `references/` for detailed guidance and verify the result.
