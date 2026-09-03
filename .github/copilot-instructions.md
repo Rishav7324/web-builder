@@ -1,0 +1,3 @@
+# Web Builder
+
+For website/web-app creation or redesign, load `skills/web-builder/SKILL.md` when the host supports skills. Otherwise follow its workflow conceptually: inspect first, ask only missing discovery questions, implement real code directly, preserve existing behavior, and verify lint/typecheck/tests/build/browser flows where available. Shared references live in `references/`. Do not substitute PRD/TRD/coding prompts for code unless explicitly requested.
