@@ -1,0 +1,1 @@
+Load and follow `skills/web-builder/SKILL.md` for website/web-app implementation. Ask only missing discovery questions, implement directly, and verify the result.
