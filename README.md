@@ -1,64 +1,135 @@
-# Web Blueprint Engine — Universal Direct Build Skill
+# Web Blueprint Engine — Universal Direct Build v7
 
-A portable Agent Skills package for turning a website idea into a working, production-ready codebase.
+A portable, production-oriented Agent Skill for turning website and web-app requirements into **real, verified code**.
 
-This is the direct-build successor to the original Web Blueprint Engine V4. It keeps the original 28 discovery questions, but removes the document-first workflow:
+## What v7 adds
 
-**Old:** research → PRD → TRD → prompts → implementation plan
+- One canonical `skill/SKILL.md`
+- Agent Skills-compatible layout
+- Claude Code fallback via `CLAUDE.md` + `.claude/skills/...`
+- OpenCode discovery via `.opencode/skills/...` and `.agents/skills/...`
+- Codex-compatible repository guidance via `AGENTS.md` + `.agents/skills/...`
+- Google Antigravity / Agent Skills-oriented `.agents/skills/...`
+- Claude-compatible plugin metadata in `.claude-plugin/plugin.json`
+- Cross-platform Python, shell and PowerShell installers
+- Non-destructive agent detection
+- Project-local installation by default
+- Explicit global installation
+- Safe `--force` overwrite only when intentionally requested
+- Mirror verification and synchronization utilities
+- Multi-agent repository safety rules
+- Original reference material retained under `references/`
+- Direct implementation instead of mandatory PRD/TRD/prompt generation
 
-**New:** research when useful → same discovery → architecture decisions internally → **write real code → run tests/build → verify → fix**
+## Repository layout
 
-## Portable agent support
-
-The canonical skill is `skill/SKILL.md`. The repository also includes agent-discovery copies under:
-
-- `.agents/skills/web-blueprint-engine/SKILL.md`
-- `.claude/skills/web-blueprint-engine/SKILL.md`
-- `.opencode/skills/web-blueprint-engine/SKILL.md`
-
-A root `AGENTS.md` provides an additional instruction fallback for agents that read repository-level agent instructions.
-
-## Install
-
-### Project-local
-
-```bash
-python3 installer/install.py
+```text
+skill/SKILL.md                         # canonical skill
+references/                            # original V4-derived detailed references
+.agents/skills/web-blueprint-engine/   # Agent Skills / Codex / Antigravity mirror
+.claude/skills/web-blueprint-engine/   # Claude Code mirror
+.opencode/skills/web-blueprint-engine/ # OpenCode mirror
+.claude-plugin/plugin.json             # Claude-compatible plugin metadata
+AGENTS.md                              # generic/Codex repository fallback
+CLAUDE.md                              # Claude Code repository fallback
+installer/                             # detection, install, sync, verify
+agent-adapters/                        # machine-readable interoperability policy
+skill-manifest.json                    # package metadata
 ```
 
-### Global
+## Install for one or many agents
+
+### Automatic project-local detection
 
 ```bash
-python3 installer/install.py --global
+python3 installer/install.py --project --targets auto
 ```
 
-The installer detects the common Claude Code, OpenCode, Agent Skills, and Antigravity discovery locations and copies the canonical skill into writable locations.
+### Install all project-local adapters
 
-## Usage
+```bash
+python3 installer/install.py --project --targets all
+```
 
-Once discovered or installed, ask your coding agent to build a website normally.
+### Global installation (explicit)
 
-Example:
+```bash
+python3 installer/install.py --global --targets all
+```
 
-> Build a modern Hindi writer website with a public article archive, author profile, categories, search, and an admin editor.
+### Detect the host
 
-The skill asks the same structured discovery questions when required information is missing, then directly implements the application.
+```bash
+python3 installer/install.py --detect
+```
+
+### Windows PowerShell
+
+```powershell
+./installer/install.ps1 --project --targets all
+```
+
+### Verify mirrors
+
+```bash
+python3 installer/verify.py
+```
+
+### Sync mirrors from canonical source
+
+```bash
+python3 installer/sync-mirrors.py
+```
+
+## Supported targets
+
+The package is designed for:
+
+- Claude Code
+- OpenCode
+- OpenAI Codex and Codex-compatible Agent Skills environments
+- Google Antigravity / Gemini Agent Skills-compatible environments
+- other agents that discover standard `SKILL.md` skills
+- custom agents that can read repository instructions
+
+The installer is deliberately conservative. It never silently modifies global configuration, never downloads arbitrary remote code, and does not replace a different existing skill unless `--force` is explicitly supplied.
+
+## Direct-build behavior
+
+The skill keeps the original structured discovery questions but skips questions already answered by the user. It then:
+
+1. inspects the repository
+2. selects the smallest suitable architecture
+3. implements real frontend/backend/data/auth/integrations
+4. wires real states and user journeys
+5. runs lint/typecheck/tests/build
+6. performs browser verification when available
+7. fixes deterministic failures
+8. reports actual implementation status
+
+PRD/TRD/AI-prompt documents are **not** the default deliverable. The codebase is.
+
+## Multi-agent safety
+
+When multiple coding agents work on the same repository:
+
+- treat `skill/SKILL.md` as the source of truth
+- prefer project-local skill installation
+- keep agent mirrors identical
+- do not edit another agent's global configuration without explicit intent
+- do not commit secrets or machine-specific paths
+- avoid destructive git operations
+- do not run competing package-manager operations concurrently
 
 ## Important limitation
 
-No remote Git repository can force an arbitrary coding agent to install itself. Automatic discovery depends on the agent supporting a compatible skill/instruction convention and having the repository available. The repository therefore uses standard `SKILL.md` placement, an `AGENTS.md` fallback, and a cross-agent installer rather than pretending there is a universal auto-install API.
+There is no universal API that lets a GitHub repository force every arbitrary AI agent to execute an installer. Automatic installation is possible only where the host exposes compatible skill/plugin discovery or filesystem execution.
 
-## Design principles
+This project therefore maximizes interoperability rather than making an impossible guarantee: standard skill layout + common agent discovery paths + repository instruction fallbacks + an explicit cross-platform installer.
 
-- Direct implementation over documentation
-- Existing project compatibility over needless rewrites
-- Secure-by-default
-- Mobile-first
-- Accessible
-- SEO-aware
-- Test and verify before claiming completion
-- No fake buttons, mock production paths, or unresolved placeholders
-- Minimal architecture that can grow with real requirements
+## Original package preservation
+
+The original package was a V4 document/blueprint generator. Its detailed reference material is retained in `references/` so no useful domain knowledge is lost. The active canonical skill intentionally supersedes its document-first workflow and turns those requirements into implementation and verification rules.
 
 ## License
 
