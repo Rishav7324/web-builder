@@ -1,0 +1,1 @@
+Use `../../../../references/architecture.md` for the repository's shared architecture guidance. This file exists as a discovery-friendly pointer inside the skill package.
