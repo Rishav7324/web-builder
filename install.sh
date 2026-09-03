@@ -17,7 +17,7 @@ fi
 
 echo "Installing Web Builder..."
 git clone --depth 1 --quiet "$REPO" "$TMP"
-# The public one-command installer installs globally for the current user.
-# Explicit --project remains available when running installer/install.py directly.
-python3 "$TMP/installer/install.py" --global --targets all "$@"
+# Auto mode installs only agents actually detected on this machine.
+# Use installer/install.py --global --targets all for an explicit all-host install.
+python3 "$TMP/installer/install.py" --global --targets auto "$@"
 echo "Web Builder installed successfully."
