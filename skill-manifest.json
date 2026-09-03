@@ -1,0 +1,25 @@
+{
+  "name": "web-blueprint-engine",
+  "version": "5.0.0",
+  "type": "agent-skill",
+  "standard": "agentskills",
+  "description": "Universal direct-build website engineering skill. Same discovery questions, direct implementation, tests and verification.",
+  "entrypoint": "skill/SKILL.md",
+  "install": {
+    "command": "python3 installer/install.py",
+    "global": "python3 installer/install.py --global"
+  },
+  "discovery": {
+    "project": [
+      ".claude/skills/web-blueprint-engine/SKILL.md",
+      ".opencode/skills/web-blueprint-engine/SKILL.md",
+      ".agents/skills/web-blueprint-engine/SKILL.md"
+    ],
+    "global": [
+      "~/.claude/skills/web-blueprint-engine/SKILL.md",
+      "~/.config/opencode/skills/web-blueprint-engine/SKILL.md",
+      "~/.agents/skills/web-blueprint-engine/SKILL.md",
+      "~/.gemini/config/skills/web-blueprint-engine/SKILL.md"
+    ]
+  }
+}
