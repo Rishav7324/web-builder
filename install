@@ -1,3 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
-exec "$(dirname "$0")/install.sh" "$@"
+
+# This file is designed to work when piped directly to bash:
+# curl -fsSL https://raw.githubusercontent.com/Rishav7324/web-builder/main/install | bash
+
+REPO_RAW="https://raw.githubusercontent.com/Rishav7324/web-builder/main"
+TMP="${TMPDIR:-/tmp}/web-builder-install-$$"
+cleanup(){ rm -rf "$TMP"; }
+trap cleanup EXIT INT TERM
+
+if ! command -v git >/dev/null 2>&1; then
+  echo "Error: git is required." >&2
+  exit 1
+fi
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Error: Python 3 is required." >&2
+  exit 1
+fi
+
+mkdir -p "$TMP/installer"
+
+# Fetch the installer itself instead of resolving paths relative to stdin's $0.
+if command -v curl >/dev/null 2>&1; then
+  curl -fsSL "$REPO_RAW/installer/install.py" -o "$TMP/installer/install.py"
+elif command -v wget >/dev/null 2>&1; then
+  wget -qO "$TMP/installer/install.py" "$REPO_RAW/installer/install.py"
+else
+  echo "Error: curl or wget is required." >&2
+  exit 1
+fi
+
+# The Python installer clones the repository only when needed and performs the
+# same safe, non-destructive target installation as the full installer.
+python3 "$TMP/installer/install.py" --targets all "$@"
+
+echo "Web Builder installed successfully."
