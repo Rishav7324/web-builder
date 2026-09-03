@@ -1,0 +1,8 @@
+{
+  "name": "web-builder",
+  "description": "Universal direct-build Web Blueprint Engine skill for coding agents",
+  "version": "7.0.0",
+  "author": {
+    "name": "Rishav7324"
+  }
+}
