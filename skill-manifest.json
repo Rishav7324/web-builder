@@ -1,13 +1,14 @@
 {
   "schema_version": "1.1",
   "name": "web-blueprint-engine",
-  "version": "7.1.0",
+  "version": "8.0.0",
   "type": "agent-skill",
   "standard": "agentskills",
   "portable": true,
   "canonical_entrypoint": "skill/SKILL.md",
   "canonical_package": "skill/",
-  "description": "Universal direct-build website and web-app engineering skill with cross-agent discovery, non-destructive installation, multi-agent safety, implementation, testing, and browser verification.",
+  "references": "skill/references/",
+  "description": "Advanced universal direct-build website and web-app engineering skill with discovery, repository intelligence, architecture, UX/accessibility, backend/data, security, integrations, SEO/performance, CI/CD, testing, browser verification, and progressive-disclosure references.",
   "install": {
     "one_command_linux_macos": "curl -fsSL https://raw.githubusercontent.com/Rishav7324/web-builder/main/install.sh | bash",
     "python": "python3 installer/install.py",
