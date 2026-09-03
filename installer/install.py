@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-"""Universal non-destructive installer for Web Blueprint Engine.
-
-Canonical skill: skills/web-blueprint-engine/
-Project-local installation is the safe default. Global installation is explicit.
-"""
+"""Universal non-destructive installer for Web Blueprint Engine."""
 from __future__ import annotations
 import argparse, hashlib, os, shutil, sys
 from pathlib import Path
 
 NAME = "web-blueprint-engine"
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE = ROOT / "skills" / NAME
+# The repository's canonical source is skill/. The skills/web-builder copy is
+# an adapter mirror and must not be used as the installer source of truth.
+SOURCE = ROOT / "skill"
 SKILL = SOURCE / "SKILL.md"
 
 PROJECT_TARGETS = {
@@ -39,7 +37,7 @@ def digest(path: Path) -> str:
     return h.hexdigest()
 
 def detect() -> list[str]:
-    found=[]
+    found = []
     for name, signals in SIGNALS.items():
         if any((os.environ.get(s) if s.isidentifier() else Path(s).exists()) for s in signals):
             found.append(name)
@@ -54,7 +52,7 @@ def copy_skill(target: Path, force: bool) -> str:
         if not force:
             return f"skipped-existing: {target} (different skill; use --force to replace)"
     target.mkdir(parents=True, exist_ok=True)
-    if target.exists() and force:
+    if force:
         for item in target.iterdir():
             shutil.rmtree(item) if item.is_dir() else item.unlink()
     for item in SOURCE.iterdir():
@@ -63,32 +61,47 @@ def copy_skill(target: Path, force: bool) -> str:
     return f"installed: {target}"
 
 def main() -> int:
-    p=argparse.ArgumentParser(description="Install Web Blueprint Engine for coding agents")
+    p = argparse.ArgumentParser(description="Install Web Blueprint Engine for coding agents")
     p.add_argument("--project", action="store_true")
     p.add_argument("--global", dest="global_install", action="store_true")
     p.add_argument("--targets", default="auto", help="auto, all, or comma list")
     p.add_argument("--force", action="store_true")
     p.add_argument("--detect", action="store_true")
-    args=p.parse_args()
+    args = p.parse_args()
     if not SKILL.is_file():
-        print(f"error: canonical skill missing: {SKILL}", file=sys.stderr); return 2
+        print(f"error: canonical skill missing: {SKILL}", file=sys.stderr)
+        return 2
     if args.detect:
-        print("\n".join(detect())); return 0
+        print("\n".join(detect()))
+        return 0
     project = args.project or not args.global_install
-    if args.targets == "auto": selected=[x for x in detect() if x in PROJECT_TARGETS] or ["agents"]
-    elif args.targets == "all": selected=["claude","opencode","agents","antigravity"]
-    else: selected=[x.strip() for x in args.targets.split(",") if x.strip()]
-    installed=errors=0
+    if args.targets == "auto":
+        selected = [x for x in detect() if x in PROJECT_TARGETS] or ["agents"]
+    elif args.targets == "all":
+        selected = ["claude", "opencode", "agents", "antigravity"]
+    else:
+        selected = [x.strip() for x in args.targets.split(",") if x.strip()]
+    installed = errors = 0
     for name in selected:
         if project and name in PROJECT_TARGETS:
-            try: print(copy_skill(Path.cwd()/PROJECT_TARGETS[name], args.force)); installed+=1
-            except OSError as e: print(f"[skip] project/{name}: {e}", file=sys.stderr); errors+=1
+            try:
+                print(copy_skill(Path.cwd() / PROJECT_TARGETS[name], args.force))
+                installed += 1
+            except OSError as e:
+                print(f"[skip] project/{name}: {e}", file=sys.stderr)
+                errors += 1
         if args.global_install and name in GLOBAL_TARGETS:
-            try: print(copy_skill(GLOBAL_TARGETS[name], args.force)); installed+=1
-            except OSError as e: print(f"[skip] global/{name}: {e}", file=sys.stderr); errors+=1
+            try:
+                print(copy_skill(GLOBAL_TARGETS[name], args.force))
+                installed += 1
+            except OSError as e:
+                print(f"[skip] global/{name}: {e}", file=sys.stderr)
+                errors += 1
     if not installed:
-        print("No writable installation target found. Copy skills/web-blueprint-engine manually.", file=sys.stderr); return 1
+        print("No writable installation target found. Use --project or --global.", file=sys.stderr)
+        return 1
     print(f"Installed/verified {installed} target(s); {errors} error(s).")
     return 0 if not errors else 1
 
-if __name__ == "__main__": raise SystemExit(main())
+if __name__ == "__main__":
+    raise SystemExit(main())
