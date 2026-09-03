@@ -1,6 +1,6 @@
 # Next.js + React Playbook
 
-Use when the repository uses Next.js or React. Verify the project's installed versions and current official documentation before relying on version-sensitive APIs. Next.js currently documents both App Router and Pages Router; prefer the router already used by the repository and do not migrate a working app merely for style. citeturn0search4turn0search7
+Use when the repository uses Next.js or React. Verify the project's installed versions and current official documentation before relying on version-sensitive APIs. Next.js documents both App Router and Pages Router; prefer the router already used by the repository and do not migrate a working app merely for style.
 
 ## Next.js
 
@@ -30,14 +30,14 @@ Choose server actions, route handlers, API endpoints, or client data libraries b
 
 ## UI stack
 
-If the project already uses a component system, extend it. If introducing shadcn/ui, add only required components and customize the source in the repository rather than creating a second component abstraction. shadcn/ui is intentionally open-code and composable. citeturn0search6turn0search17
+If the project already uses a component system, extend it. If introducing shadcn/ui, add only required components and customize the source in the repository rather than creating a second component abstraction.
 
 ## Verification
 
 Run the repository's native lint/typecheck/test/build commands. For route changes, verify direct navigation, refresh, browser back/forward, loading/error states, and mobile behavior.
 
-## Official references
+## Official documentation
 
-- Next.js docs: urlNext.js Documentationhttps://nextjs.org/docs
-- React docs: urlReact Documentationhttps://react.dev/
-- shadcn/ui docs: urlshadcn/ui Documentationhttps://ui.shadcn.com/docs
+Next.js: https://nextjs.org/docs
+React: https://react.dev/
+shadcn/ui: https://ui.shadcn.com/docs
