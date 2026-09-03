@@ -1,0 +1,1 @@
+OpenCode native discovery: `.opencode/skills/web-builder/SKILL.md`. The same skill is also available at `.agents/skills/web-builder/SKILL.md` and `skills/web-builder/SKILL.md`. Use the shared references; keep host glue thin.
